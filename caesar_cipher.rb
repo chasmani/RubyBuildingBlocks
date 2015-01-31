@@ -3,11 +3,15 @@
 
 def caesar_cipher(string, shift)
 	
+	#Letter Arrays
 	alpha = ("a".."z").to_a
 	alphaBig = ("A".."Z").to_a
 	new_string = ""
+
+	#Do shift on each letter one at a time
 	string.split(//).each do |letter|
 		
+		#See if letter should be shifted, shift using function
 		if alpha.include? letter
 			new_letter = letterShift(letter, alpha, shift)
 		elsif alphaBig.include? letter
@@ -22,6 +26,7 @@ def caesar_cipher(string, shift)
 end
 
 def letterShift(letter, array, shift)
+#captures letter shift logic
 
 	index = array.index(letter)
 	new_index = (index + shift)%(array.length)
