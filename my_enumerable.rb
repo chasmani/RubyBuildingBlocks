@@ -13,9 +13,9 @@ module Enumerable
 
 	def my_select
 		new_array = []
-		self.length.times do |i|
-			if yield(self[i]) == true
-				new_array << self[i]
+		self.my_each do |i|
+			if yield(i) == true
+				new_array << i
 			end
 		end
 		new_array
@@ -54,6 +54,18 @@ module Enumerable
 		result
 	end
 
+	def my_count(&block)
+		#Works only with argument and a block
+
+		count=0
+		
+		self.my_each do |element|
+				count += 1 if block.call(element)
+		end
+		
+		count
+	end
+
 end
 
 
@@ -71,3 +83,5 @@ puts names.my_all? {|i| i.is_a? Fixnum}
 puts numbers.my_all? {|i| i > 0}
 puts numbers.my_any? {|i| i == 10 }
 puts numbers.my_none? {|i| i == 5 }
+
+puts names.my_count {|i| i == "Bob"}
