@@ -1,6 +1,5 @@
 module Enumerable
 	def my_each
-
 		self.length.times do |i|
 			yield(self[i])
 		end
@@ -13,17 +12,16 @@ module Enumerable
 	end
 
 	def my_select
-		new_array = []
+		result = []
 		self.my_each do |i|
 			if yield(i) == true
-				new_array << i
+				result << i
 			end
 		end
-		new_array
+		result
 	end
 
 	def my_all?
-
 		result = true
 		self.my_each do |element|
 			if yield(element) == false
@@ -34,7 +32,6 @@ module Enumerable
 	end
 
 	def my_any?
-
 		result = false
 		self.my_each do |element|
 			if yield(element) == true
@@ -45,7 +42,6 @@ module Enumerable
 	end
 
 	def my_none?
-
 		result = true
 		self.my_each do |element|
 			if yield(element) == true
@@ -57,36 +53,35 @@ module Enumerable
 
 	def my_count(&block)
 		#Works only with block
-
 		count=0
-		
 		self.my_each do |element|
 				count += 1 if block.call(element)
 		end
-		
 		count
 	end
 
 	def my_map_with_block(&block)
 		#Works only with block
-		new_array = []
+		result = []
 		self.my_each do |element|
-			new_array << yield(element)
+			result << yield(element)
 		end
-		new_array
+		result
 	end
 
 	def my_map_with_proc(proc)
 		#Works only with proc
-		new_array = []
+		result = []
 		self.my_each do |element|
-			new_array << proc.call(element)
+			result << proc.call(element)
 		end
-		new_array
+		result
 	end
 
 	def my_map(proc=nil, &block)
-		
+		#Works with any combination given
+		#If block and proc - both applied
+		#if nothing given - return enumerable
 		if proc && !block_given?	
 			result = self.my_map_with_proc(proc)			
 		elsif !proc && block_given?
@@ -100,14 +95,6 @@ module Enumerable
 		result
 	end
 
-
-
-
-
-	def my_collect(&block)
-		my_map(&block)
-	end
-
 	def my_inject(arg, &block)
 		result=arg
 		self.my_each do |element|
@@ -115,19 +102,15 @@ module Enumerable
 		end
 		result
 	end
-
-	
 end
 
 def multiply_els(array)
 	array.my_inject(1) {|result, element| result * element}
 end
 
-
 numbers = [1,2,3,4,5]
 names = ["Bob", "Jim", "Alex", "Charlie"]
 mixed = ["John", 7, "Axle", 21, 2, "Janice", "Bo"]
-
 
 puts "--------my_each tests-----------"
 puts "Expect 12345: "
@@ -139,7 +122,6 @@ puts "\n--------my each with index tests ------"
 puts "Expect Hello NAME you are INDEX in the queue, one per line"
 names.my_each_with_index {|name, index| puts "Hello #{name} you are #{index} in the queue"}
 
-
 puts "\n--------my_select tests---------_"
 puts "Expect names of length 3 - "
 puts names.my_select {|i| i.length == 3}
@@ -148,7 +130,6 @@ puts "\nExpect numbers above 3 - \n"
 puts numbers.my_select {|i| i > 3}
 
 puts "\n---------my_all? tests------------_"
-
 puts "Expect FALSE - "
 puts names.my_all? {|i| i.is_a? Fixnum}
 
@@ -170,27 +151,9 @@ puts names.my_count {|i| i == "Bob"}
 puts "\nExpect 3 - "
 puts numbers.my_count {|i| i <4}
 
-#puts"\nExpect 2 - "
-#puts mixed.my_count {|i| i > 5}
-
-puts "\n---------my_map tests ------------"
-puts "Expect NAME! once per line - "
-puts names.my_map {|x| x + "!"}
-
-puts "Expect numbers squared, once per line, 1,4,9,16,25"
-puts numbers.my_map {|x| x**2}
-
-puts "\n---------my_collect tests-------"
-puts "Expect NAME! once per line - "
-puts names.my_collect {|x| x + "!"}
-
-puts "Expect numbers squared, once per line, 1,4,9,16,25"
-puts numbers.my_collect {|x| x**2}
-
 puts "\n----------my_inject tests--------"
 puts "Expect 15 - "
 puts numbers.my_inject(0) {|result, element| result + element}
-
 
 puts "Expect a hash for Shane Harvie"
 hash = [[:first_name, 'Shane'], [:last_name, 'Harvie']].my_inject({}) do |result, element|
@@ -220,9 +183,6 @@ puts names.my_map_with_block {|x| x + "!"}
 puts "Expect numbers squared, once per line, 1,4,9,16,25"
 puts numbers.my_map_with_block {|x| x**2}
 
-
-
-
 puts "\n-----------my_map_with_proc tests------------------"
 exclaim_proc = Proc.new {|x| x + "!"}
 puts "Expect NAME! once per line - "
@@ -238,3 +198,9 @@ puts numbers.my_map(square)
 
 puts "Expect numbers squared plus 5, once per line, 6,9,14,21,30"
 puts numbers.my_map(square) {|x| x+5}
+
+puts "Expect NAME! once per line - "
+puts names.my_map {|x| x + "!"}
+
+puts "Expect Enumerable returned"
+puts names.my_map
