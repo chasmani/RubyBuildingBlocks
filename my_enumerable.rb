@@ -1,5 +1,6 @@
 module Enumerable
 	def my_each
+
 		self.length.times do |i|
 			yield(self[i])
 		end
@@ -66,7 +67,7 @@ module Enumerable
 		count
 	end
 
-	def my_map(&block)
+	def my_map_with_block(&block)
 		#Works only with block
 		new_array = []
 		self.my_each do |element|
@@ -74,6 +75,34 @@ module Enumerable
 		end
 		new_array
 	end
+
+	def my_map_with_proc(proc)
+		#Works only with proc
+		new_array = []
+		self.my_each do |element|
+			new_array << proc.call(element)
+		end
+		new_array
+	end
+
+	def my_map(proc=nil, &block)
+		
+		if proc && !block_given?	
+			result = self.my_map_with_proc(proc)			
+		elsif !proc && block_given?
+			result = self.my_map_with_block(&block)
+		elsif proc && block_given?
+			result = self.my_map_with_proc(proc)			
+			result = result.my_map_with_block(&block)
+		elsif !proc && !block_given?
+			result = self.to_enum
+		end
+		result
+	end
+
+
+
+
 
 	def my_collect(&block)
 		my_map(&block)
@@ -184,4 +213,28 @@ puts multiply_els([2,4,5])
 puts "Expect 120 - "
 puts multiply_els(numbers)
 
-puts "\n-----------my_map proc------------------"
+puts "\n---------my_map_with_block tests ------------"
+puts "Expect NAME! once per line - "
+puts names.my_map_with_block {|x| x + "!"}
+
+puts "Expect numbers squared, once per line, 1,4,9,16,25"
+puts numbers.my_map_with_block {|x| x**2}
+
+
+
+
+puts "\n-----------my_map_with_proc tests------------------"
+exclaim_proc = Proc.new {|x| x + "!"}
+puts "Expect NAME! once per line - "
+puts names.my_map_with_proc(exclaim_proc)
+
+square = Proc.new {|i| i**2}
+puts "Expect numbers squared, once per line, 1,4,9,16,25"
+puts numbers.my_map_with_proc(square)
+
+puts "\n-----------my_map tests------------------"
+puts "Expect numbers squared, once per line, 1,4,9,16,25"
+puts numbers.my_map(square)
+
+puts "Expect numbers squared plus 5, once per line, 6,9,14,21,30"
+puts numbers.my_map(square) {|x| x+5}
