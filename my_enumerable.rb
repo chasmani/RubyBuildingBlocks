@@ -79,6 +79,19 @@ module Enumerable
 		my_map(&block)
 	end
 
+	def my_inject(arg, &block)
+		result=arg
+		self.my_each do |element|
+			result =  yield(result, element)
+		end
+		result
+	end
+
+	
+end
+
+def multiply_els(array)
+	array.my_inject(1) {|result, element| result * element}
 end
 
 
@@ -133,14 +146,42 @@ puts numbers.my_count {|i| i <4}
 
 puts "\n---------my_map tests ------------"
 puts "Expect NAME! once per line - "
-puts names.map {|x| x + "!"}
+puts names.my_map {|x| x + "!"}
 
 puts "Expect numbers squared, once per line, 1,4,9,16,25"
-puts numbers.map {|x| x**2}
+puts numbers.my_map {|x| x**2}
 
 puts "\n---------my_collect tests-------"
 puts "Expect NAME! once per line - "
-puts names.map {|x| x + "!"}
+puts names.my_collect {|x| x + "!"}
 
 puts "Expect numbers squared, once per line, 1,4,9,16,25"
-puts numbers.map {|x| x**2}
+puts numbers.my_collect {|x| x**2}
+
+puts "\n----------my_inject tests--------"
+puts "Expect 15 - "
+puts numbers.my_inject(0) {|result, element| result + element}
+
+
+puts "Expect a hash for Shane Harvie"
+hash = [[:first_name, 'Shane'], [:last_name, 'Harvie']].my_inject({}) do |result, element|
+  result[element.first] = element.last
+  result
+end
+puts hash
+
+puts "Expect an array of 2,4,6"
+array = [1, 2, 3, 4, 5, 6].my_inject([]) do |result, element|
+  result << element.to_s if element % 2 == 0
+  result
+end
+puts array 
+
+puts "\n----------multiply_els tests --------------"
+puts "Expect 40 - "
+puts multiply_els([2,4,5])
+
+puts "Expect 120 - "
+puts multiply_els(numbers)
+
+puts "\n-----------my_map proc------------------"
