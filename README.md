@@ -2,7 +2,7 @@
 Some simple exercises completed in Ruby
 
 **my_enumerable**
-Recreated some of the functionality of the Enumberable module in my own version of the module.
+Recreated some of the functionality of the Enumberable module in my own version.
 
 **caesar_cipher**
 Moves letters in a string up or down the alphabet. 
